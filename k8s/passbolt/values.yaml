@@ -23,6 +23,7 @@ passboltEnv:
   plain:
     APP_FULL_BASE_URL: https://passbolt.angabo.cloud
     PASSBOLT_SSL_FORCE: false
+    PASSBOLT_SECURITY_USER_IP: false
     CACHE_DEFAULT_HOST: 127.0.0.1
     PASSBOLT_REGISTRATION_PUBLIC: true
     DEBUG: true

@@ -20,6 +20,27 @@ spec:
   storage:
     storageClass: nfs-client
     size: 10Gi
+  backup:
+    barmanObjectStore:
+      destinationPath: "gs://angabo-backup"
+      googleCredentials:
+        applicationCredentials:
+          name: backup-creds
+          key: gcsCredentials
+      # destinationPath: "https://projektinzynierski.blob.core.windows.net/postgres-backup"
+      # azureCredentials:
+      #   # connectionString:
+      #   #   name: azure-creds
+      #   #   key: AZURE_STORAGE_CONNECTION_STRING
+      #   storageAccount:
+      #     name: azure-creds
+      #     key: AZURE_STORAGE_ACCOUNT
+      #   storageKey:
+      #     name: azure-creds
+      #     key: AZURE_STORAGE_KEY
+      #   # storageSasToken:
+      #   #   name: azure-creds
+      #   #   key: AZURE_STORAGE_SAS_TOKEN
 ---
 
 apiVersion: v1
@@ -31,4 +52,20 @@ type: Opaque
 stringData:
   username: passbolt
   password: zaq12wsx
+
+---
+# Old-style scheduled backup using built-in barmanObjectStore
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: pg-daily-backup
+  namespace: db
+spec:
+  cluster:
+    name: postgres-cluster
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  backupOwnerReference: self
+  method: barmanObjectStore  # Use the built-in method
+  target: primary
+  immediate: false
 
